@@ -1,0 +1,8 @@
+.itemCardImage {
+  height: 150px !important;
+  object-fit: scale-down;
+}
+.itemCard,
+.itemCardBadge {
+  margin: 8px;
+}
