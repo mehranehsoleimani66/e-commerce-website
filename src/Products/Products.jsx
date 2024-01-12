@@ -1,17 +1,34 @@
 import { useEffect, useState } from "react";
 import styles from "./products.module.css";
-import { List, Badge, Card, Image, Rate, Typography, Button } from "antd";
-const Products = () => {
-  const [items, setItems] = useState([]);
-  useEffect(() => {
-    fetch("https://dummyjson.com/products")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data.products, "m");
-        setItems(data.products);
-      });
-  }, []);
+import {
+  List,
+  Badge,
+  Card,
+  Image,
+  Rate,
+  Typography,
+  message,
+  Button,
+  Spin
+} from "antd";
 
+import { addToCart, getAllProducts, getProductsByCategory } from "../API";
+import { useParams } from "react-router-dom";
+function Products() {
+  const [loading, setLoading] = useState(false);
+  const param = useParams();
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    setLoading(true);
+    (param?.categoryId
+      ? getProductsByCategory(param.categoryId)
+      : getAllProducts()
+    ).then((res) => {
+      setItems(res.products);
+      setLoading(false);
+    });
+  }, [param]);
   return (
     <div>
       <List
@@ -35,7 +52,7 @@ const Products = () => {
                 }
                 actions={[
                   <Rate allowHalf disabled value={product.rating} />,
-                  <AddToCartItem />
+                  <AddToCartButton item={product} />
                 ]}
               >
                 <Card.Meta
@@ -67,9 +84,26 @@ const Products = () => {
       ></List>
     </div>
   );
-};
-function AddToCartItem() {
-  return <Button type="link">Add to Cart</Button>;
 }
-
+function AddToCartButton({ item }) {
+  const [loading, setLoading] = useState(false);
+  const addProductToCart = () => {
+    setLoading(true);
+    addToCart(item.id).then((res) => {
+      message.success(`${item.title} has been added to cart!`);
+      setLoading(false);
+    });
+  };
+  return (
+    <Button
+      type="link"
+      onClick={() => {
+        addProductToCart();
+      }}
+      loading={loading}
+    >
+      Add to Cart
+    </Button>
+  );
+}
 export default Products;
