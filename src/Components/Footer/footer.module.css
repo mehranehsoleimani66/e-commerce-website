@@ -1,4 +1,7 @@
 .container {
   height: 60px;
-  background: black;
+  background-color: black;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
