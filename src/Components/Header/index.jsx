@@ -16,7 +16,7 @@ import { HomeFilled, ShoppingCartOutlined } from "@ant-design/icons";
 import styles from "./header.module.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getCart } from "../../API";
+
 const Header = () => {
   const navigate = useNavigate();
 
@@ -96,6 +96,11 @@ const AppCart = () => {
   const [openDraw, setOpenDraw] = useState(false);
   const [checkOutDrawer, setCheckOutDrawer] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+
+  const getCart = () => {
+    return fetch("https://dummyjson.com/carts/1").then((res) => res.json());
+  };
+
   useEffect(() => {
     getCart().then((res) => {
       setCartItems(res.products);
