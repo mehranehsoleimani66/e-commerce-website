@@ -17,7 +17,6 @@ import styles from "./header.module.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getCart } from "../../API";
-
 const Header = () => {
   const navigate = useNavigate();
 
