@@ -1,4 +1,17 @@
-import { Menu, Typography, Badge, Drawer, Table, InputNumber } from "antd";
+import {
+  Menu,
+  Typography,
+  Badge,
+  Form,
+  Drawer,
+  Input,
+  Checkbox,
+  message,
+  Image,
+  Button,
+  Table,
+  InputNumber
+} from "antd";
 import { HomeFilled, ShoppingCartOutlined } from "@ant-design/icons";
 import styles from "./header.module.css";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +27,8 @@ const Header = () => {
 
   return (
     <div className={styles.container}>
+      <Image width={200} src="../images/logo.png" />
+
       <Menu
         onClick={menuOnClick}
         className={styles.menu}
@@ -73,24 +88,31 @@ const Header = () => {
           }
         ]}
       />
-      <Typography.Title>Mehii Shop</Typography.Title>
+
       <AppCart />
     </div>
   );
 };
 const AppCart = () => {
   const [openDraw, setOpenDraw] = useState(false);
+  const [checkOutDrawer, setCheckOutDrawer] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   useEffect(() => {
     getCart().then((res) => {
       setCartItems(res.products);
     });
   }, []);
+  const confirmOrders = (values) => {
+    console.log({ values });
+    setOpenDraw(false);
+    setCheckOutDrawer(false);
+    message.success("Your order has been placed successfully.");
+  };
 
   return (
     <div>
       <Badge
-        count={9}
+        count={cartItems.length}
         className={styles.cartIcon}
         onClick={() => setOpenDraw(true)}
       >
@@ -151,6 +173,61 @@ const AppCart = () => {
             return <span>Total: ${total}</span>;
           }}
         />
+        <Button onClick={() => setCheckOutDrawer(true)} type="primary">
+          checkout your cart
+        </Button>
+      </Drawer>
+      <Drawer open={checkOutDrawer} onClose={() => setCheckOutDrawer(false)}>
+        <Form onFinish={confirmOrders}>
+          <Form.Item
+            name="fullName"
+            label="Full Name"
+            rules={[
+              {
+                required: true,
+                message: "Please Enter Your Full Name..."
+              }
+            ]}
+          >
+            <Input placeholder="Enter your full name" />
+          </Form.Item>
+          <Form.Item
+            name="Email"
+            label="Email"
+            rules={[
+              {
+                required: true,
+                message: "Please Enter Your Email..."
+              }
+            ]}
+          >
+            <Input placeholder="Enter your Valid Email" />
+          </Form.Item>
+          <Form.Item
+            name="address"
+            label="Address"
+            rules={[
+              {
+                required: true,
+                message: "Please Enter Your Address."
+              }
+            ]}
+          >
+            <Input placeholder="Enter Your Address" />
+          </Form.Item>
+          <Form.Item>
+            <Checkbox defaultChecked disabled>
+              Cash on Delivery
+            </Checkbox>
+          </Form.Item>
+          <Typography.Paragraph type="secondary">
+            {" "}
+            More methods coming soon
+          </Typography.Paragraph>
+          <Button type="primary" htmlType="submit">
+            Confirm Your Orders
+          </Button>
+        </Form>
       </Drawer>
     </div>
   );
