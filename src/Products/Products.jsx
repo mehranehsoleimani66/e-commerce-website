@@ -9,7 +9,7 @@ import {
   Typography,
   message,
   Button,
-  Spin
+  Select
 } from "antd";
 
 import { addToCart, getAllProducts, getProductsByCategory } from "../API";
@@ -18,7 +18,7 @@ function Products() {
   const [loading, setLoading] = useState(false);
   const param = useParams();
   const [items, setItems] = useState([]);
-
+  const [sortOrder, setSortOrder] = useState("az");
   useEffect(() => {
     setLoading(true);
     (param?.categoryId
@@ -29,15 +29,69 @@ function Products() {
       setLoading(false);
     });
   }, [param]);
+
+  const getSortedItems = () => {
+    const sortedItem = [...items];
+    sortedItem.sort((a, b) => {
+      const aLowerCaseTitle = a.title.toLowerCase();
+      const bLowerCaseTitle = b.title.toLowerCase();
+
+      if (sortOrder === "az") {
+        return aLowerCaseTitle > bLowerCaseTitle
+          ? 1
+          : aLowerCaseTitle === bLowerCaseTitle
+          ? 0
+          : -1;
+      } else if (sortOrder === "za") {
+        return aLowerCaseTitle < bLowerCaseTitle
+          ? 1
+          : aLowerCaseTitle === bLowerCaseTitle
+          ? 0
+          : -1;
+      } else if (sortOrder === "lowHigh") {
+        return a.price > b.price ? 1 : a.price === b.price ? 0 : -1;
+      } else if (sortOrder === "highLow") {
+        return a.price < b.price ? 1 : a.price === b.price ? 0 : -1;
+      }
+    });
+    return sortedItem;
+  };
+
   return (
-    <div>
+    <div className={styles.productContainer}>
+      <div>
+        <Typography.Text>View Items Sorted By: </Typography.Text>
+        <Select
+          onChange={(value) => setSortOrder(value)}
+          defaultValue={"az"}
+          options={[
+            {
+              label: "Alphabetically a-z",
+              value: "az"
+            },
+            {
+              label: "Alphabetically z-a",
+              value: "za"
+            },
+            {
+              label: "Price Low to High",
+              value: "lowHigh"
+            },
+            {
+              label: "Price High to Low",
+              value: "highLow"
+            }
+          ]}
+        ></Select>
+      </div>
       <List
+        loading={loading}
         grid={{ column: 3 }}
         renderItem={(product, index) => {
           return (
             <Badge.Ribbon
               className={styles.itemCardBadge}
-              text={product.discountPercentage}
+              text={`${product.discountPercentage}% off`}
               color="pink"
             >
               <Card
@@ -80,7 +134,7 @@ function Products() {
             </Badge.Ribbon>
           );
         }}
-        dataSource={items}
+        dataSource={getSortedItems()}
       ></List>
     </div>
   );
