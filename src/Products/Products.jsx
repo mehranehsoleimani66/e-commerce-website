@@ -19,6 +19,7 @@ function Products() {
   const param = useParams();
   const [items, setItems] = useState([]);
   const [sortOrder, setSortOrder] = useState("az");
+
   useEffect(() => {
     setLoading(true);
     (param?.categoryId
