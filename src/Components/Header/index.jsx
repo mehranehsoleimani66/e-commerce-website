@@ -16,7 +16,7 @@ import { HomeFilled, ShoppingCartOutlined } from "@ant-design/icons";
 import styles from "./header.module.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getCart } from "../../API";
+import { getCart } from "../../API/index";
 
 const Header = () => {
   const navigate = useNavigate();

@@ -12,7 +12,7 @@ import {
   Select
 } from "antd";
 
-import { addToCart, getAllProducts, getProductsByCategory } from "../API";
+import { addToCart, getAllProducts, getProductsByCategory } from "../API/index";
 import { useParams } from "react-router-dom";
 function Products() {
   const [loading, setLoading] = useState(false);
